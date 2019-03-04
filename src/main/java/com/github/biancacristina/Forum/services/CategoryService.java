@@ -3,7 +3,10 @@ package com.github.biancacristina.Forum.services;
 import com.github.biancacristina.Forum.domain.Category;
 import com.github.biancacristina.Forum.dto.CategoryDTO;
 import com.github.biancacristina.Forum.repositories.CategoryRepository;
+import com.github.biancacristina.Forum.services.exceptions.DataIntegrityException;
+import com.github.biancacristina.Forum.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,7 +18,9 @@ public class CategoryService {
     private CategoryRepository categoryRepository;
 
     public Category findById(Integer id) {
-        return categoryRepository.findById(id).orElse(null);
+        return categoryRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException(
+                    "Objeto nao encontrado! Id: " + id + ", Tipo: " + Category.class.getName()));
     }
 
     public Page<Category> findAllPage(
@@ -49,7 +54,14 @@ public class CategoryService {
 
     public void deleteById(Integer id) {
         this.findById(id);
-        categoryRepository.deleteById(id);
+
+        try {
+            categoryRepository.deleteById(id);
+        }
+
+        catch (DataIntegrityViolationException e) {
+            throw new DataIntegrityException("Não é possível excluir uma categoria com tópicos associado a ela.");
+        }
     }
 
     public Category fromDTO (CategoryDTO objDTO) {
