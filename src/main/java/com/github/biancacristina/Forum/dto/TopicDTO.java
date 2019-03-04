@@ -1,13 +1,23 @@
 package com.github.biancacristina.Forum.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class TopicDTO {
 
     private Integer id;
+
+    @NotEmpty
+    @NotNull
+    @Length(min=5, max= 80, message= "Deve ter entre 5 e 80 caracteres.")
     private String title;
+
+    @NotNull
+    @NotEmpty
     private String text;
 
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")

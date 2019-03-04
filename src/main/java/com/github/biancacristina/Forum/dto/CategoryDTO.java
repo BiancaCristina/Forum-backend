@@ -1,8 +1,17 @@
 package com.github.biancacristina.Forum.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class CategoryDTO {
 
     private Integer id;
+
+    @NotEmpty
+    @NotNull
+    @Length(min=5, max= 50, message= "Deve ter entre 5 e 50 caracteres.")
     private String name;
 
     public CategoryDTO() {}

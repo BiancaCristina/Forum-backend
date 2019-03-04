@@ -1,8 +1,14 @@
 package com.github.biancacristina.Forum.dto;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class UserDTO {
 
     private Integer id;
+
+    @NotEmpty
+    @NotNull
     private String nickname;
 
     public UserDTO() {}

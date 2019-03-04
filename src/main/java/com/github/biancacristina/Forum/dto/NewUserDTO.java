@@ -1,11 +1,31 @@
 package com.github.biancacristina.Forum.dto;
 
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 public class NewUserDTO {
 
     private Integer id;
+
+    @NotEmpty
+    @NotNull
+    @Length(min=5, max= 60, message= "Deve ter entre 5 e 60 caracteres.")
     private String name;
+
+    @NotEmpty
+    @NotNull
+    @Length(min=4, max= 20, message= "Deve ter entre 4 e 20 caracteres.")
     private String nickname;
+
+    @NotEmpty
+    @NotNull
     private String email;
+
+    @NotEmpty
+    @NotNull
+    @Length(min=8, max= 16, message= "Deve ter entre 8 e 16 caracteres.")
     private String password;
 
     public NewUserDTO() {}
