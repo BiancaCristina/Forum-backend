@@ -32,6 +32,7 @@ public class Topic {
     @JoinColumn(name= "user_id")
     private User user;
 
+    public Topic() {}
     public Topic(Integer id, String title, String text, Category category, User user) {
         this.id = id;
         this.title = title;
@@ -41,7 +42,7 @@ public class Topic {
         this.lastEdited = LocalDateTime.now();
 
         // Use the text to initialize the first message of the topic
-        addMessage(new Message(text, this, user));
+        addMessage(new Message(null, text, this, user));
     }
 
     public Integer getId() {

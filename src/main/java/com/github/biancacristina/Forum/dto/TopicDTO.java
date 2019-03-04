@@ -13,13 +13,19 @@ public class TopicDTO {
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
     private LocalDateTime date;
 
-    public TopicDTO() {}
+    public TopicDTO() {
+        this.date = LocalDateTime.now();
+    }
 
     public TopicDTO(Integer id, String title, String text, LocalDateTime date) {
         this.id = id;
         this.title = title;
         this.text = text;
         this.date = date;
+
+        if (date == null) {
+            this.date = LocalDateTime.now();
+        }
     }
 
     public Integer getId() {

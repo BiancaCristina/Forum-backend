@@ -1,10 +1,10 @@
 package com.github.biancacristina.Forum.resources;
 
-import com.github.biancacristina.Forum.domain.Category;
+import com.github.biancacristina.Forum.domain.Message;
 import com.github.biancacristina.Forum.domain.Topic;
 import com.github.biancacristina.Forum.domain.User;
-import com.github.biancacristina.Forum.dto.TopicDTO;
-import com.github.biancacristina.Forum.services.CategoryService;
+import com.github.biancacristina.Forum.dto.MessageDTO;
+import com.github.biancacristina.Forum.services.MessageService;
 import com.github.biancacristina.Forum.services.TopicService;
 import com.github.biancacristina.Forum.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,51 +17,50 @@ import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value="/topics")
-public class TopicResource {
+@RequestMapping(value="/messages")
+public class MessageResource {
 
     @Autowired
-    private TopicService topicService;
+    private MessageService messageService;
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    private CategoryService categoryService;
+    private TopicService topicService;
 
     @RequestMapping(value="/{id}", method= RequestMethod.GET)
-    public ResponseEntity<Topic> findById (@PathVariable Integer id) {
-        Topic obj = topicService.findById(id);
+    public ResponseEntity<Message> findById (@PathVariable Integer id) {
+        Message obj = messageService.findById(id);
 
         return ResponseEntity.ok().body(obj);
     }
 
     @RequestMapping(value="/page", method=RequestMethod.GET)
-    public ResponseEntity<Page<TopicDTO>> findAllPage (
+    public ResponseEntity<Page<MessageDTO>> findAllPage (
             @RequestParam(value="page", defaultValue= "0") Integer page,
             @RequestParam(value="linesPerPage", defaultValue="10") Integer linesPerPage
     ) {
-        Page<Topic> list = topicService.findAllPage(page, linesPerPage);
-        Page<TopicDTO> listDTO = list.map(obj -> new TopicDTO(
-                obj.getId(),
-                obj.getTitle(),
-                obj.getMessages().get(0).getText(),
-                obj.getCreationDate()));
+        Page<Message> list = messageService.findAllPage(page, linesPerPage);
+        Page<MessageDTO> listDTO = list.map(
+                obj -> new MessageDTO(
+                            obj.getId(),
+                            obj.getText(),
+                            obj.getLastEdited()));
 
         return ResponseEntity.ok().body(listDTO);
     }
 
-    @RequestMapping(value="/{idCategory}/{idUser}", method= RequestMethod.POST)
+    @RequestMapping(value="/{idTopic}/{idUser}", method= RequestMethod.POST)
     public ResponseEntity<Void> insert (
-            @PathVariable Integer idCategory,
-            @PathVariable Integer idUser,
-            @Valid @RequestBody TopicDTO objDTO) {
-
-        Category category = categoryService.findById(idCategory);
+            @Valid @RequestBody MessageDTO objDTO,
+            @PathVariable Integer idTopic,
+            @PathVariable Integer idUser) {
         User user = userService.findById(idUser);
+        Topic topic = topicService.findById(idTopic);
 
-        Topic obj = topicService.fromDTO(user, category,objDTO);
-        obj = topicService.insert(user, category, obj);
+        Message obj = messageService.fromDTO(topic, user, objDTO);
+        obj = messageService.insert(user, topic, obj);
 
         // Returns the object's URI
         URI uri1 = ServletUriComponentsBuilder.
@@ -72,8 +71,8 @@ public class TopicResource {
 
         String uriString = uri1.toString();
 
-        String[] str = uriString.split("topics/");
-        uriString = str[0] + "topics/" + obj.getId();
+        String[] str = uriString.split("messages/");
+        uriString = str[0] + "messages/" + obj.getId();
 
         URI uri2 = ServletUriComponentsBuilder
                 .fromUriString(uriString)
@@ -83,9 +82,19 @@ public class TopicResource {
         return ResponseEntity.created(uri2).build();
     }
 
+    @RequestMapping(value="/{id}", method=RequestMethod.PUT)
+    public ResponseEntity<Void> update (
+            @Valid @RequestBody MessageDTO objDTO,
+            @PathVariable Integer id
+    ) {
+        messageService.update(objDTO, id);
+
+        return ResponseEntity.noContent().build();
+    }
+
     @RequestMapping(value= "/{id}", method= RequestMethod.DELETE)
     public ResponseEntity<Void> deleteById (@PathVariable Integer id) {
-        topicService.deleteById(id);
+        messageService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

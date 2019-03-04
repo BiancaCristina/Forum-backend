@@ -30,7 +30,8 @@ public class Message {
 
     public Message() {}
 
-    public Message(String text, Topic topic, User user) {
+    public Message(Integer id, String text, Topic topic, User user) {
+        this.id = id;
         this.text = text;
         this.topic = topic;
         this.user = user;
