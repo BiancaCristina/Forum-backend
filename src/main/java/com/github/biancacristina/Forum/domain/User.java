@@ -2,14 +2,14 @@ package com.github.biancacristina.Forum.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.biancacristina.Forum.domain.enums.Profile;
-import org.springframework.data.annotation.Id;
 import javax.persistence.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
 public class User {
-    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
 
     private String name;
