@@ -32,7 +32,8 @@ public class Topic {
     @JoinColumn(name= "user_id")
     private User user;
 
-    public Topic(String title, String text, Category category, User user) {
+    public Topic(Integer id, String title, String text, Category category, User user) {
+        this.id = id;
         this.title = title;
         this.category = category;
         this.user = user;

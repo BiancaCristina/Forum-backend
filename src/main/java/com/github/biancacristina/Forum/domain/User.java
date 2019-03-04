@@ -37,7 +37,8 @@ public class User {
 
     public User() {}
 
-    public User(String name, String nickname, String email, String password) {
+    public User(Integer id, String name, String nickname, String email, String password) {
+        this.id = id;
         this.name = name;
         this.nickname = nickname;
         this.email = email;

@@ -30,8 +30,8 @@ public class ForumApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		User u1 = new User("José", "jj12", "jose@gmail.com", pe.encode("123"));
-		User u2 = new User("Maria", "mm12", "maria@gmail.com", pe.encode("456"));
+		User u1 = new User(null,"José", "jj12", "jose@gmail.com", pe.encode("123"));
+		User u2 = new User(null,"Maria", "mm12", "maria@gmail.com", pe.encode("456"));
 
 		userRepository.saveAll(Arrays.asList(u1,u2));
 

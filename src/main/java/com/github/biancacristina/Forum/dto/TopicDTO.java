@@ -8,15 +8,17 @@ public class TopicDTO {
 
     private Integer id;
     private String title;
+    private String text;
 
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
     private LocalDateTime date;
 
     public TopicDTO() {}
 
-    public TopicDTO(Integer id, String title, LocalDateTime date) {
+    public TopicDTO(Integer id, String title, String text, LocalDateTime date) {
         this.id = id;
         this.title = title;
+        this.text = text;
         this.date = date;
     }
 
@@ -34,6 +36,14 @@ public class TopicDTO {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
     }
 
     public LocalDateTime getDate() {
