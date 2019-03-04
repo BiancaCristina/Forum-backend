@@ -1,6 +1,7 @@
 package com.github.biancacristina.Forum.config;
 
 import com.github.biancacristina.Forum.security.JWTAuthenticationFilter;
+import com.github.biancacristina.Forum.security.JWTAuthorizationFilter;
 import com.github.biancacristina.Forum.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -38,11 +39,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             "/h2-console/**",
     };
 
-    // Define which paths aren't block for the public as read-only
+    // Define which paths aren't block for the public as read-only(GET)
     private static final String[] PUBLIC_MATCHERS_GET = {
             "/categories/**",
             "/topics/**",
             "/messages/**"
+    };
+
+    // Define which paths aren't block for the public to insert (POST)
+    private static final String[] PUBLIC_MATCHERS_POST = {
+            "/users"
     };
 
     @Override
@@ -61,13 +67,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             request permission for all others (/users for instance)
         */
         http.authorizeRequests()
+                .antMatchers(HttpMethod.POST, PUBLIC_MATCHERS_POST).permitAll()
                 .antMatchers(HttpMethod.GET, PUBLIC_MATCHERS_GET).permitAll()
                 .antMatchers(PUBLIC_MATCHERS).permitAll()
                 .anyRequest()
                 .authenticated();
 
-        // Register JWTAuthenticationFilter
+        // Register JWTAuthenticationFilter and JWTAuthorizationFilter
         http.addFilter(new JWTAuthenticationFilter(authenticationManager(), jwtUtil));
+        http.addFilter(new JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService));
 
         // Don't create session for user (work as a kind of "stateless proxy")
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
