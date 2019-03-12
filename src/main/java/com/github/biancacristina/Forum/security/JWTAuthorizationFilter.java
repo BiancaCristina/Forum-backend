@@ -29,33 +29,28 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter{
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain chain) throws IOException, ServletException {
-        // Metodo padrao que eh executado antes da requisicao continuar
-
-        String header = request.getHeader("Authorization"); // Recebe o token
+        String header = request.getHeader("Authorization"); // Get the token
 
         if (header != null && header.startsWith("Bearer ")) {
-            // Se o header nao for nulo e comecar com "Bearer "
-
-            // O comando abaixo pega apenas o token de autorizacao sem o "Bearer "
+            // Get the token without "Bearer "
             UsernamePasswordAuthenticationToken auth = getAuthentication(header.substring(7));
-            // Fim do comando
 
             if (auth != null) {
-                // Caso o token seja invalido, entao auth sera null
-                // Assim, caso auth nao seja null, liberamos o acesso com o comando abaixo:
+                // If auth is null means that the token is invalid
+                // When the token isn't null, the acess is allowed
                 SecurityContextHolder.getContext().setAuthentication(auth);
                 // Fim do comando
             }
         }
 
-        // Esse comando continua fazendo a requisicao normalmente depois dos testes
+        // Continues the request after the tests
         chain.doFilter(request, response);
-        // Fim do comando
     }
 
     private UsernamePasswordAuthenticationToken getAuthentication(String token) {
         if(jwtUtil.validToken(token)) {
-            // Se o token for valido
+            // If the token is valid, return an authenticated user
+
             String username  = jwtUtil.getUsername(token);
             UserDetails user = userDetailsService.loadUserByUsername(username);
             return new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());

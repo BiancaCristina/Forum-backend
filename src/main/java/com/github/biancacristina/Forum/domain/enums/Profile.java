@@ -21,7 +21,7 @@ public enum Profile {
     }
 
     public static Profile toEnum(Integer cod) {
-        // Convert a code to a Profile
+        // Convert a cod to a Profile
 
         if (cod == null) return null;
 
